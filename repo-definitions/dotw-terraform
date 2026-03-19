@@ -1,0 +1,197 @@
+# dotw-terraform
+
+## Canonical Repository URL
+
+<https://github.com/tmilkotev/dotw-terraform>
+
+## Purpose
+
+A structured, multi-account AWS lab environment built with Terraform, designed to develop practical, production-aligned cloud and infrastructure-as-code skills.
+
+Primary goals:
+
+- Provide a meaningful, hands-on AWS learning environment
+- Model real-world multi-account architecture
+- Enable safe experimentation under strict cost constraints
+- Serve as the cloud infrastructure layer within the DOTW ecosystem
+
+## Scope and Boundaries
+
+In Scope:
+
+- AWS multi-account foundational architecture
+- Core infrastructure provisioning via Terraform
+- Networking (VPC, subnets, routing)
+- Compute (EC2, Lambda)
+- Storage (S3, DynamoDB)
+- Databases (RDS – controlled usage)
+- IAM and security constructs
+- Basic monitoring and logging (CloudWatch)
+- Budgeting and cost alerting
+
+Out of Scope:
+
+- Kubernetes or container platform deployment
+- Application deployment workflows
+- CI/CD systems
+- Advanced observability stacks (Prometheus, Grafana, Loki)
+- Platform orchestration (handled by dotw-platformctl)
+- High-cost AWS services (e.g., NAT Gateway, EKS, ALB)
+
+## Architecture Overview
+
+The system is based on a production-inspired multi-account AWS structure.
+
+Accounts:
+
+- management  
+- network  
+- workload  
+- security  
+
+Responsibilities:
+
+- management: global configuration, budgets, future shared services
+- network: VPC and networking primitives
+- workload: compute, storage, and lab workloads
+- security: IAM, audit, and security-related services
+
+The architecture follows a foundation-first approach:
+
+- Establish account structure
+- Build networking baseline
+- Add compute and storage layers
+- Introduce monitoring and cost controls
+
+Accounts are initially isolated, with connectivity introduced later if required.
+
+## Repository Structure
+
+- `accounts/`
+  - `management/`
+  - `network/`
+  - `workload/`
+  - `security/`
+- `modules/`
+  - `vpc/`
+  - `ec2/`
+  - `s3/`
+  - `dynamodb/`
+  - `iam/`
+  - `lambda/`
+  - `rds/`
+  - `cloudwatch/`
+  - `budget/`
+- `environments/`
+  - `lab/`
+- `global/`
+  - shared variables and conventions
+
+## Core Concepts
+
+- Multi-account architecture as a first-class design principle
+- Infrastructure as Code using Terraform only (no orchestration layer)
+- Foundation-first progression before adding higher-level services
+- Strict cost-awareness and resource lifecycle control
+- Modular Terraform design for reuse and clarity
+- Production-inspired patterns adapted for lab scale
+
+## Design Decisions
+
+- Terraform is executed standalone and not via platformctl
+- Multi-account structure includes management, network, workload, and security accounts
+- State is initially stored locally to avoid external dependencies
+- Architecture prioritizes realism while remaining within free-tier constraints
+- Services are selected based on relevance to SRE roles and real-world usage
+- High-cost managed services are intentionally excluded from early stages
+
+## Constraints
+
+Cost constraints:
+
+- Must remain within AWS free tier whenever possible
+- No always-on paid resources
+- No NAT Gateway, load balancers, or paid control planes
+- EC2 instances must be stoppable and minimal size (t2.micro/t3.micro)
+- RDS usage must be minimal, controlled, or optional
+- Storage usage must remain small and monitored
+
+Service constraints:
+
+- Prefer free or low-cost services
+- Avoid high-throughput or high-frequency workloads
+- Avoid multi-AZ and high-availability configurations initially
+
+State constraints:
+
+- Terraform state stored locally in early phases
+- Remote state (S3 + DynamoDB) deferred to later stage
+
+## AWS Service Classification
+
+FREE:
+
+- IAM
+- VPC
+- Security Groups
+- NACLs
+- Route Tables
+- CloudWatch (basic metrics)
+- CloudTrail (basic)
+- AWS Budgets
+- Auto Scaling (control plane)
+
+SEMI-FREE:
+
+- EC2 (free tier limited)
+- S3 (limited storage and requests)
+- DynamoDB (limited capacity)
+- Lambda (limited invocations)
+- CloudWatch Logs (limited ingestion)
+
+SEMI-PAID:
+
+- RDS (free tier with constraints)
+- EBS volumes
+- Route 53
+
+PAID (avoid initially):
+
+- NAT Gateway
+- Application/Network Load Balancers
+- EKS
+- OpenSearch
+- ElastiCache
+- VPC endpoints (certain types)
+
+## Operational Model
+
+- Terraform is executed per account or per component
+- Infrastructure is built incrementally from foundation to services
+- Resources are created, tested, and destroyed as part of learning cycles
+- Cost monitoring is implemented early via budgets and alerts
+- Future enhancements may include automated shutdown of idle resources
+
+## Quality Bar
+
+- Deterministic and reproducible Terraform deployments
+- Clear separation between accounts and responsibilities
+- Strict adherence to cost constraints
+- Minimal but realistic architecture aligned with industry practices
+- Clean, modular Terraform code structure
+- Alignment with real-world SRE expectations
+
+## First Milestone (v0.1.0)
+
+- Multi-account structure defined
+- Basic VPC in network account
+- Initial IAM setup
+- Single EC2 instance in workload account
+- Budget and cost alerting configured
+- Foundational Terraform module structure established
+
+## Notes
+
+This repository represents the AWS and Terraform pillar of the DOTW ecosystem.
+
+It is designed not just for infrastructure provisioning, but as a structured learning platform aligned with real-world Site Reliability Engineering practices.
