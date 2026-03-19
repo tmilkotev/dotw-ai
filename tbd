@@ -1,0 +1,10 @@
+this is how dotw-ai should analyze repos - powershell
+
+# quick
+Get-ChildItem -Recurse -File |
+Where-Object { $_.Name -ne 'repo.txt' -and $_.FullName -notmatch '\\.git\\' } |
+ForEach-Object {
+    "===== $($_.FullName) ====="
+    Get-Content $_.FullName -Raw
+    "`n"
+} | Out-File repo.txt -Encoding utf8
