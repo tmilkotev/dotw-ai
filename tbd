@@ -8,3 +8,17 @@ ForEach-Object {
     Get-Content $_.FullName -Raw
     "`n"
 } | Out-File repo.txt -Encoding utf8
+
+
+
+
+structure AI dynamic memory into
+
+long → understanding - 120–220 lines
+medium → execution - 40–90 lines
+short → control - 12–30
+
+structure AI static memory into
+long → understanding - 120–220 lines
+medium → execution - 40–90 lines
+short → control - 12–30
